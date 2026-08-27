@@ -1,7 +1,7 @@
 # Android Live Delivery & Courier Tracking Engine 🚚
 
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.0.0-blue.svg)](https://kotlinlang.org)
-[![Android](https://img.shields.io/badge/Android-SDK%2034-green.svg)](https://developer.android.com)
+[![Android](https://img.shields.io/badge/Android-API%2026%2B-green.svg)](https://developer.android.com)
 [![Compose](https://img.shields.io/badge/Jetpack%20Compose-1.6.0-brightgreen.svg)](https://developer.android.com/jetpack/compose)
 [![Architecture](https://img.shields.io/badge/Architecture-Multi--Module%20Clean%20MVI-orange.svg)](https://developer.android.com/topic/architecture)
 [![License](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
@@ -106,7 +106,7 @@ fun provideMapAdapter(
         .isGooglePlayServicesAvailable(context) == ConnectionResult.SUCCESS
     return when {
         isGmsAvailable -> gmsAdapter.get()
-        isHuaweiDevice() -> hmsAdapter.get()
+        isHuaweiMobileServicesAvailable(context) -> hmsAdapter.get()
         else -> yandexAdapter.get()
     }
 }
@@ -116,8 +116,8 @@ fun provideMapAdapter(
 
 ## 🧪 Testing & Verification
 
-- **Unit Tests:** Run `./gradlew :feature:tracking:test` for ViewModel StateFlow emissions and Lerp interpolation tests.
-- **Location Simulator:** Built-in `MockLocationEngine` generates simulated GPS courier movements for testing without a physical device.
+- **Unit Tests:** `./gradlew :feature:tracking:test` covers `TrackingViewModel` state transitions (Idle → Connecting → Tracking/Error); `./gradlew :core:location-abstraction:test` covers the Lerp position/bearing interpolation and offline-route simulation.
+- **Location Simulator:** `MockLocationEngine.simulateRoute(...)` (in `core:location-abstraction`) emits a `Flow<CourierLocation>` walking a list of `LatLngPoint`s at a configurable interval, so the tracking screen and marker animation can be exercised on an emulator without a live backend.
 
 ---
 
