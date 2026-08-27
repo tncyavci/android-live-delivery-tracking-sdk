@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Flat (non-adaptive) fallback for API 24-25 devices, which predate adaptive icons. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="@color/ic_launcher_background"
+        android:pathData="M0,0h108v108h-108z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,27 C43,27 34,36 34,47 C34,62 54,81 54,81 C54,81 74,62 74,47 C74,36 65,27 54,27 Z" />
+    <path
+        android:fillColor="#1A73E8"
+        android:pathData="M54,38 C48.5,38 44,42.5 44,48 C44,53.5 48.5,58 54,58 C59.5,58 64,53.5 64,48 C64,42.5 59.5,38 54,38 Z" />
+</vector>

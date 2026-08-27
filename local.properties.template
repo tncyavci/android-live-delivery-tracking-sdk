@@ -1,0 +1,7 @@
+# Copy this file to local.properties (already gitignored) and fill in real values.
+# local.properties is read directly by Gradle (app/build.gradle.kts) and by Android Studio.
+
+sdk.dir=/path/to/Android/sdk
+
+MAPS_API_KEY=AIzaSyYourGoogleMapsApiKeyHere
+YANDEX_MAPKIT_API_KEY=your-yandex-mapkit-api-key-here
