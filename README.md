@@ -1,5 +1,6 @@
 # Android Live Delivery & Courier Tracking Engine 🚚
 
+[![CI](https://github.com/tncyavci/android-live-delivery-tracking-sdk/actions/workflows/ci.yml/badge.svg)](https://github.com/tncyavci/android-live-delivery-tracking-sdk/actions/workflows/ci.yml)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.0.0-blue.svg)](https://kotlinlang.org)
 [![Android](https://img.shields.io/badge/Android-API%2026%2B-green.svg)](https://developer.android.com)
 [![Compose](https://img.shields.io/badge/Jetpack%20Compose-1.6.0-brightgreen.svg)](https://developer.android.com/jetpack/compose)
