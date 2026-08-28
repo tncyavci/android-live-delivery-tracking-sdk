@@ -25,6 +25,12 @@ sealed interface TrackingIntent {
         val routePoints: List<LatLngPoint> = emptyList(),
     ) : TrackingIntent
 
+    /** Drives the screen off `MockLocationEngine` instead of a live backend, for demos. */
+    data class StartDemo(
+        val routePoints: List<LatLngPoint>,
+        val tickIntervalMs: Long = 2_000,
+    ) : TrackingIntent
+
     data object StopTracking : TrackingIntent
 
     data object Retry : TrackingIntent

@@ -2,11 +2,14 @@ package com.tuncayavci.tracking.feature.tracking
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tuncayavci.tracking.location.CourierLocation
 import com.tuncayavci.tracking.location.LatLngPoint
+import com.tuncayavci.tracking.location.MockLocationEngine
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -27,20 +30,35 @@ class TrackingViewModel
         val effects = _effects.receiveAsFlow()
 
         private var trackingJob: Job? = null
-        private var lastIntent: TrackingIntent.StartTracking? = null
-        private var currentRoutePoints: List<LatLngPoint> = emptyList()
+        private var retryAction: (() -> Unit)? = null
 
         fun onIntent(intent: TrackingIntent) {
             when (intent) {
                 is TrackingIntent.StartTracking -> startTracking(intent)
+                is TrackingIntent.StartDemo -> startDemo(intent)
                 TrackingIntent.StopTracking -> stopTracking()
-                TrackingIntent.Retry -> lastIntent?.let { startTracking(it) }
+                TrackingIntent.Retry -> retryAction?.invoke()
             }
         }
 
         private fun startTracking(intent: TrackingIntent.StartTracking) {
-            lastIntent = intent
-            currentRoutePoints = intent.routePoints
+            retryAction = { startTracking(intent) }
+            collectLocations(intent.routePoints) {
+                repository.observeCourierLocation(intent.orderId, intent.endpointUrl)
+            }
+        }
+
+        private fun startDemo(intent: TrackingIntent.StartDemo) {
+            retryAction = { startDemo(intent) }
+            collectLocations(intent.routePoints) {
+                MockLocationEngine.simulateRoute(intent.routePoints, intent.tickIntervalMs)
+            }
+        }
+
+        private fun collectLocations(
+            routePoints: List<LatLngPoint>,
+            locationSource: () -> Flow<CourierLocation>,
+        ) {
             trackingJob?.cancel()
             _uiState.value = TrackingUiState.Connecting
 
@@ -51,13 +69,13 @@ class TrackingViewModel
 
             trackingJob =
                 viewModelScope.launch(exceptionHandler) {
-                    repository.observeCourierLocation(intent.orderId, intent.endpointUrl)
+                    locationSource()
                         .catch { onTrackingFailure(it) }
                         .collect { location ->
                             _uiState.value =
                                 TrackingUiState.Tracking(
                                     courierLocation = location,
-                                    routePoints = currentRoutePoints,
+                                    routePoints = routePoints,
                                 )
                         }
                 }

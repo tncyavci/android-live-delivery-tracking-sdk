@@ -18,6 +18,7 @@ complexity:
     active: true
     functionThreshold: 7
     constructorThreshold: 8
+    ignoreAnnotated: ['Composable']
 
 naming:
   active: true

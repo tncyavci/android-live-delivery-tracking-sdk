@@ -29,11 +29,12 @@ fun TrackingScreen(
     routePoints: List<LatLngPoint> = emptyList(),
     onShowError: (String) -> Unit = {},
     viewModel: TrackingViewModel = hiltViewModel(),
+    startIntent: TrackingIntent = TrackingIntent.StartTracking(orderId, endpointUrl, routePoints),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    LaunchedEffect(orderId, endpointUrl) {
-        viewModel.onIntent(TrackingIntent.StartTracking(orderId, endpointUrl, routePoints))
+    LaunchedEffect(startIntent) {
+        viewModel.onIntent(startIntent)
     }
 
     LaunchedEffect(viewModel) {
